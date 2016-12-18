@@ -99,3 +99,19 @@ class Api(object):
             podcast = Podcast._from_json(podcast_json, self)
             podcasts.append(podcast)
         return podcasts
+
+    def new_podcast_releases(self):
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/episodes/"
+                                      "new_releases_episodes.json")
+        response.raise_for_status()
+
+        episodes = []
+        podcasts = {}
+        for episode_json in response.json()['episodes']:
+            podcast_uuid = episode_json['podcast_uuid']
+            if podcast_uuid not in podcasts:
+                podcasts[podcast_uuid] = self.podcast(podcast_uuid)
+            episode = Episode._from_json(episode_json, podcasts[podcast_uuid])
+            episodes.append(episode)
+        return episodes
