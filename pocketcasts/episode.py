@@ -12,6 +12,7 @@ class Episode(object):
 
     def __init__(self, uuid, podcast, **kwargs):
         self._podcast = podcast
+        self._api = podcast._api
         # I don't know what is_deleted means exactly, it seems always False
         # I don't know what id means, it is an unsigned int or null
         self._uuid = uuid
@@ -48,6 +49,18 @@ class Episode(object):
     @property
     def playing_status(self):
         return self._playing_status
+
+    @playing_status.setter
+    def playing_status(self, playing_status):
+        # XXX(if-else is not very elegant, maybe refactor)
+        if playing_status == Episode.PlayingStatus.Played:
+            self._api.mark_as_played(self, True)
+        elif playing_status == Episode.PlayingStatus.Unplayed:
+            self._api.mark_as_played(self, False)
+        else:
+            raise ValueError("Invalid playing status: " + str(playing_status))
+        self._playing_status = playing_status
+        self._played_up_to = 0
 
     @property
     def file_type(self):

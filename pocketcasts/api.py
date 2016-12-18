@@ -147,3 +147,17 @@ class Api(object):
             episode = Episode._from_json(episode_json, podcasts[podcast_uuid])
             episodes.append(episode)
         return episodes
+
+    def mark_as_played(self, episode, played):
+        playing_status = (Episode.PlayingStatus.Played if played
+                          else Episode.PlayingStatus.Unplayed)
+        params = {'playing_status': playing_status,
+                  'podcast_uuid': episode._podcast.uuid,
+                  'uuid': episode.uuid,
+                  'played_up_to': 0}
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/episodes/"
+                                      "update_episode_position.json",
+                                      json=params)
+        response.raise_for_status()
+        # TODO(Check response for error)
