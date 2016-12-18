@@ -84,3 +84,9 @@ class Podcast(object):
     @property
     def episodes(self):
         return self._api.episodes_for_podcast(self)
+
+    def subscribe(self):
+        self._api.subscribe(self)
+
+    def unsubscribe(self):
+        self._api.unsubscribe(self)

@@ -197,3 +197,24 @@ class Api(object):
             podcast = Podcast._from_json(podcast_json, self)
             podcasts.append(podcast)
         return podcasts
+
+    def subscribe(self, podcast, subscribe=True):
+        if not subscribe:
+            return self.unsubscribe(podcast)
+
+        params = {'uuid': podcast.uuid}
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/podcasts/"
+                                      "subscribe.json",
+                                      json=params)
+        response.raise_for_status()
+        # TODO(Check response for error)
+
+    def unsubscribe(self, podcast):
+        params = {'uuid': podcast.uuid}
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/podcasts/"
+                                      "unsubscribe.json",
+                                      json=params)
+        response.raise_for_status()
+        # TODO(Check response for error)
