@@ -100,10 +100,42 @@ class Api(object):
             podcasts.append(podcast)
         return podcasts
 
-    def new_podcast_releases(self):
+    def new_episodes_released(self):
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/episodes/"
                                       "new_releases_episodes.json")
+        response.raise_for_status()
+
+        episodes = []
+        podcasts = {}
+        for episode_json in response.json()['episodes']:
+            podcast_uuid = episode_json['podcast_uuid']
+            if podcast_uuid not in podcasts:
+                podcasts[podcast_uuid] = self.podcast(podcast_uuid)
+            episode = Episode._from_json(episode_json, podcasts[podcast_uuid])
+            episodes.append(episode)
+        return episodes
+
+    def episodes_in_progress(self):
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/episodes/"
+                                      "in_progress_episodes.json")
+        response.raise_for_status()
+
+        episodes = []
+        podcasts = {}
+        for episode_json in response.json()['episodes']:
+            podcast_uuid = episode_json['podcast_uuid']
+            if podcast_uuid not in podcasts:
+                podcasts[podcast_uuid] = self.podcast(podcast_uuid)
+            episode = Episode._from_json(episode_json, podcasts[podcast_uuid])
+            episodes.append(episode)
+        return episodes
+
+    def starred_episodes(self):
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/episodes/"
+                                      "starred_episodes.json")
         response.raise_for_status()
 
         episodes = []
