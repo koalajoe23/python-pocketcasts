@@ -58,6 +58,7 @@ class Episode(object):
         elif playing_status == Episode.PlayingStatus.Unplayed:
             self._api.mark_as_played(self, False)
         else:
+            # Playing Status 0 (Playing) shall not be accepted here
             raise ValueError("Invalid playing status: " + str(playing_status))
         self._playing_status = playing_status
         self._played_up_to = 0
@@ -77,6 +78,11 @@ class Episode(object):
     @property
     def starred(self):
         return self._starred
+
+    @starred.setter
+    def starred(self, starred):
+        self._api.mark_as_starred(self, starred)
+        self._starred = starred
 
     @property
     def is_video(self):

@@ -40,14 +40,13 @@ class Api(object):
             podcasts.append(podcast)
         return podcasts
 
-    def episodes_for_podcast(self, podcast_uuid,
+    def episodes_for_podcast(self, podcast,
                              sort_order=Podcast.SortOrder.NewestFirst):
         page = 1
         pages_left = True
         episodes = []
-        podcast = self.podcast(podcast_uuid)
         while pages_left:
-            params = {'page': page, 'sort': sort_order, 'uuid': podcast_uuid}
+            params = {'page': page, 'sort': sort_order, 'uuid': podcast.uuid}
             response = self._session.post("https://play.pocketcasts.com"
                                           "/web/episodes/find_by_podcast.json",
                                           json=params)
@@ -158,6 +157,17 @@ class Api(object):
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/episodes/"
                                       "update_episode_position.json",
+                                      json=params)
+        response.raise_for_status()
+        # TODO(Check response for error)
+
+    def mark_as_starred(self, episode, starred):
+        params = {'starred': starred,
+                  'podcast_uuid': episode._podcast.uuid,
+                  'uuid': episode.uuid}
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/episodes/"
+                                      "update_episode_star.json",
                                       json=params)
         response.raise_for_status()
         # TODO(Check response for error)

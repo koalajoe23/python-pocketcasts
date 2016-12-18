@@ -83,4 +83,4 @@ class Podcast(object):
 
     @property
     def episodes(self):
-        return self._api.episodes_for_podcast(self._uuid)
+        return self._api.episodes_for_podcast(self)
