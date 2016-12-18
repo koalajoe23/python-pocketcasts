@@ -30,6 +30,7 @@ class Episode(object):
         self._is_video = kwargs.pop('is_video', '')
         self._played_up_to = kwargs.pop('played_up_to', 0)
         self._size = kwargs.pop('size', 0)
+        self._notes = kwargs.pop('notes', None)
 
     def __repr__(self):
         return str(self.__dict__)
@@ -95,6 +96,12 @@ class Episode(object):
     @property
     def size(self):
         return self._size
+
+    @property
+    def notes(self):
+        if self._notes is None:
+            self._notes = self._api.load_notes(self)
+        return self._notes
 
     @classmethod
     def _from_json(cls, json, podcast=None):

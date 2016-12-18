@@ -171,3 +171,16 @@ class Api(object):
                                       json=params)
         response.raise_for_status()
         # TODO(Check response for error)
+
+    def load_notes(self, episode):
+        params = {'uuid': episode.uuid}
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/episodes/"
+                                      "show_notes.json",
+                                      json=params)
+        response.raise_for_status()
+        # TODO(Check response for error)
+
+        show_notes = response.json()['show_notes']
+
+        return show_notes
