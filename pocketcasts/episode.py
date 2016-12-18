@@ -93,6 +93,12 @@ class Episode(object):
     def played_up_to(self):
         return self._played_up_to
 
+    @played_up_to.setter
+    def played_up_to(self, position):
+        self._api.update_episode_position(self, position)
+        self._played_up_to = position
+        self._playing_status = Episode.PlayingStatus.Unplayed
+
     @property
     def size(self):
         return self._size

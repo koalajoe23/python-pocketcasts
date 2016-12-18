@@ -218,3 +218,18 @@ class Api(object):
                                       json=params)
         response.raise_for_status()
         # TODO(Check response for error)
+
+    def update_episode_position(self, episode, position):
+        # TODO(Check position value < duration)
+        params = {'playing_status': Episode.PlayingStatus.Unplayed,
+                  'podcast_uuid': episode._podcast.uuid,
+                  'uuid': episode.uuid,
+                  'played_up_to': position,
+                  # web player sends duration so do I...
+                  'duration': episode.duration}
+        response = self._session.post("https://play.pocketcasts.com"
+                                      "/web/episodes/"
+                                      "update_episode_position.json",
+                                      json=params)
+        response.raise_for_status()
+        # TODO(Check response for error)
