@@ -184,3 +184,16 @@ class Api(object):
         show_notes = response.json()['show_notes']
 
         return show_notes
+
+    def search_podcasts(self, search_string):
+        params = {'term': search_string}
+        response = self._session.get("https://play.pocketcasts.com"
+                                     "/web/podcasts/search.json",
+                                     data=params)
+        response.raise_for_status()
+
+        podcasts = []
+        for podcast_json in response.json()['podcasts']:
+            podcast = Podcast._from_json(podcast_json, self)
+            podcasts.append(podcast)
+        return podcasts
