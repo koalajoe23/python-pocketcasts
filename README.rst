@@ -17,6 +17,7 @@ What works
 What is (or at least seems) off limits
 --------------------------------------
 Everything not doable via web player:
+
 * Next up
 * Playlists
 
