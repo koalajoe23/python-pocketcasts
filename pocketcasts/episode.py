@@ -53,6 +53,10 @@ class Episode(object):
         return self._uuid
 
     @property
+    def podcast(self):
+        return self._podcast
+
+    @property
     def title(self):
         return self._title
 
