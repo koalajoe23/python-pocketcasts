@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
 """TODO 2"""
 from datetime import datetime
+import time
+
+
+def _date2timeStamp(date, format):
+    """This workaround is needed for usage in Kodi plugins, where strptime as it
+    is only succees once and fails on subsequent calls with:
+
+    TypeError: attribute of type 'NoneType' is not callable"""
+
+    try:
+        return datetime.strptime(date, format)
+    except TypeError:
+        return datetime(*(time.strptime(date, format)[0:6]))
 
 
 class Episode(object):
@@ -23,8 +36,8 @@ class Episode(object):
         self._file_type = kwargs.pop('file_type', '')
         self._published_at = kwargs.pop('published_at', None)
         if self._published_at is not None:
-            self._published_at = datetime.strptime(self._published_at,
-                                                   "%Y-%m-%d %H:%M:%S")
+            self._published_at = _date2timeStamp(self._published_at,
+                                                 "%Y-%m-%d %H:%M:%S")
         self._duration = kwargs.pop('duration', 0)
         self._starred = bool(kwargs.pop('starred', 0))
         self._is_video = kwargs.pop('is_video', '')
