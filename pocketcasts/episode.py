@@ -21,10 +21,10 @@ class Episode(object):
         self._playing_status = kwargs.pop('playing_status',
                                           Episode.PlayingStatus.Unplayed)
         self._file_type = kwargs.pop('file_type', '')
-        self._published_at = datetime.strptime(kwargs.pop('published_at',
-                                                          datetime.today()
-                                                          ),
-                                               "%Y-%m-%d %H:%M:%S")
+        self._published_at = kwargs.pop('published_at', None)
+        if self._published_at is not None:
+            self._published_at = datetime.strptime(self._published_at,
+                                                   "%Y-%m-%d %H:%M:%S")
         self._duration = kwargs.pop('duration', 0)
         self._starred = bool(kwargs.pop('starred', 0))
         self._is_video = kwargs.pop('is_video', '')
