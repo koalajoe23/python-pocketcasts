@@ -147,12 +147,12 @@ class Api(object):
             episodes.append(episode)
         return episodes
 
-    def mark_as_played(self, episode, played):
+    def mark_as_played(self, podcast_uuid, episode_uuid, played):
         playing_status = (Episode.PlayingStatus.Played if played
                           else Episode.PlayingStatus.Unplayed)
         params = {'playing_status': playing_status,
-                  'podcast_uuid': episode._podcast.uuid,
-                  'uuid': episode.uuid,
+                  'podcast_uuid': podcast_uuid,
+                  'uuid': episode_uuid,
                   'played_up_to': 0}
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/episodes/"
@@ -161,10 +161,10 @@ class Api(object):
         response.raise_for_status()
         # TODO(Check response for error)
 
-    def mark_as_starred(self, episode, starred):
+    def mark_as_starred(self, podcast_uuid, episode_uuid, starred):
         params = {'starred': starred,
-                  'podcast_uuid': episode._podcast.uuid,
-                  'uuid': episode.uuid}
+                  'podcast_uuid': podcast_uuid,
+                  'uuid': episode_uuid}
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/episodes/"
                                       "update_episode_star.json",
@@ -172,8 +172,10 @@ class Api(object):
         response.raise_for_status()
         # TODO(Check response for error)
 
-    def load_notes(self, episode):
-        params = {'uuid': episode.uuid}
+    def load_notes(self, episode_uuid):
+        # Why star/mark played needs podcast uuid and this only episode uuid?
+        # ¯\_(ツ)_/¯
+        params = {'uuid': episode_uuid}
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/episodes/"
                                       "show_notes.json",
@@ -198,11 +200,11 @@ class Api(object):
             podcasts.append(podcast)
         return podcasts
 
-    def subscribe(self, podcast, subscribe=True):
+    def subscribe(self, podcast_uuid, subscribe=True):
         if not subscribe:
-            return self.unsubscribe(podcast)
+            return self.unsubscribe(podcast_uuid)
 
-        params = {'uuid': podcast.uuid}
+        params = {'uuid': podcast_uuid}
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/podcasts/"
                                       "subscribe.json",
@@ -210,8 +212,8 @@ class Api(object):
         response.raise_for_status()
         # TODO(Check response for error)
 
-    def unsubscribe(self, podcast):
-        params = {'uuid': podcast.uuid}
+    def unsubscribe(self, podcast_uuid):
+        params = {'uuid': podcast_uuid}
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/podcasts/"
                                       "unsubscribe.json",
@@ -219,14 +221,15 @@ class Api(object):
         response.raise_for_status()
         # TODO(Check response for error)
 
-    def update_episode_position(self, episode, position):
+    def update_episode_position(self, podcast_uuid, episode_uuid, position,
+                                episode_duration=0):
         # TODO(Check position value < duration)
         params = {'playing_status': Episode.PlayingStatus.Unplayed,
-                  'podcast_uuid': episode._podcast.uuid,
-                  'uuid': episode.uuid,
+                  'podcast_uuid': podcast_uuid,
+                  'uuid': episode_uuid,
                   'played_up_to': position,
                   # web player sends duration so do I...
-                  'duration': episode.duration}
+                  'duration': episode_duration}
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/episodes/"
                                       "update_episode_position.json",

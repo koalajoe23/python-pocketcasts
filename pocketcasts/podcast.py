@@ -86,7 +86,7 @@ class Podcast(object):
         return self._api.episodes_for_podcast(self)
 
     def subscribe(self):
-        self._api.subscribe(self)
+        self._api.subscribe(self.uuid)
 
     def unsubscribe(self):
-        self._api.unsubscribe(self)
+        self._api.unsubscribe(self.uuid)

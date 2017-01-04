@@ -72,9 +72,9 @@ class Episode(object):
     def playing_status(self, playing_status):
         # XXX(if-else is not very elegant, maybe refactor)
         if playing_status == Episode.PlayingStatus.Played:
-            self._api.mark_as_played(self, True)
+            self._api.mark_as_played(self.podcast.uuid, self.uuid, True)
         elif playing_status == Episode.PlayingStatus.Unplayed:
-            self._api.mark_as_played(self, False)
+            self._api.mark_as_played(self.podcast.uuid, self.uuid, False)
         else:
             # Playing Status 0 (Playing) shall not be accepted here
             raise ValueError("Invalid playing status: " + str(playing_status))
@@ -99,7 +99,7 @@ class Episode(object):
 
     @starred.setter
     def starred(self, starred):
-        self._api.mark_as_starred(self, starred)
+        self._api.mark_as_starred(self.podcast.uuid, self.uuid, starred)
         self._starred = starred
 
     @property
@@ -112,7 +112,8 @@ class Episode(object):
 
     @played_up_to.setter
     def played_up_to(self, position):
-        self._api.update_episode_position(self, position)
+        self._api.update_episode_position(self.podcast.uuid, self.uuid,
+                                          position, self.duration)
         self._played_up_to = position
         self._playing_status = Episode.PlayingStatus.Unplayed
 
@@ -123,7 +124,7 @@ class Episode(object):
     @property
     def notes(self):
         if self._notes is None:
-            self._notes = self._api.load_notes(self)
+            self._notes = self._api.load_notes(self.uuid)
         return self._notes
 
     @classmethod
