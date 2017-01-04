@@ -100,6 +100,11 @@ class Episode(object):
     @starred.setter
     def starred(self, starred):
         self._api.mark_as_starred(self.podcast.uuid, self.uuid, starred)
+        """
+        FIXME fetch starred episodes to verify successful starring.
+        api response is not revelatory (signals success on non-subscribed
+        episodes, but does not add them to starred list)
+        """
         self._starred = starred
 
     @property

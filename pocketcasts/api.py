@@ -200,7 +200,7 @@ class Api(object):
             podcasts.append(podcast)
         return podcasts
 
-    def subscribe(self, podcast_uuid, subscribe=True):
+    def subscribe_podcast(self, podcast_uuid, subscribe=True):
         if not subscribe:
             return self.unsubscribe(podcast_uuid)
 
@@ -212,7 +212,7 @@ class Api(object):
         response.raise_for_status()
         # TODO(Check response for error)
 
-    def unsubscribe(self, podcast_uuid):
+    def unsubscribe_podcast(self, podcast_uuid):
         params = {'uuid': podcast_uuid}
         response = self._session.post("https://play.pocketcasts.com"
                                       "/web/podcasts/"
