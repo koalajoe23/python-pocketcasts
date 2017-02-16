@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """TODO: Class description API"""
-from episode import Episode
-from podcast import Podcast
+from .episode import Episode
+from .podcast import Podcast
 import requests
 
 
